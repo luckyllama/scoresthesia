@@ -1,21 +1,35 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { HashRouter as Router, Route, withRouter } from 'react-router-dom';
+import Layout from './layouts/default';
+import Home from './routes/home';
+import Generate from './routes/generate';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      <Router>
+        <Layout>
+          <Route exact path='/' component={Home} />
+          <Route path='/generate' component={Generate} />
+        </Layout>
+      </Router>
     );
   }
 }
 
 export default App;
+
+class ScrollToTopBase extends Component {
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      window.scrollTo(0, 0);
+      document.getElementById('page-content').scrollTo(0,0);
+    }
+  }
+
+  render() {
+    return null;
+  }
+}
+
+let ScrollToTop = withRouter(ScrollToTopBase)
