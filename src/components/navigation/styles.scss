@@ -1,3 +1,27 @@
 nav.global {
-  
+  background: rgba(62/255,58/255,55/255, .75);
+
+  ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+
+    li {
+      list-style: none;
+      flex: 0;
+      line-height: 60px;
+
+      &.home {
+        font-size: 1.33em;
+        flex: 1;
+      }
+
+      a {
+        display: block;
+        text-decoration: none;
+        color: #fff;
+        padding: 0 40px;
+      }
+    }
+  }
 }

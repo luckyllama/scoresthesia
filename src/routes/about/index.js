@@ -4,12 +4,12 @@ import React, { Component } from 'react';
 import './styles.scss';
 
 // @observer
-export default class Home extends Component {
+export default class About extends Component {
   componentWillMount () {}
 
   render() {
-    return <div className='home'>
-      home tbd
+    return <div className='about'>
+      about tbd
     </div>;
   }
 }

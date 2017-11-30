@@ -24,7 +24,8 @@ class Navigation extends Component {
     return (
       <nav className={globalClasses}>
         <ul>
-          <li><Link to='home'>browse</Link></li>
+          <li className='home'><Link to='/'>scoresthesia</Link></li>
+          {/* <li><Link to='home'>browse</Link></li> */}
           <li><Link to='generate'>create</Link></li>
           <li><Link to='about'>what?</Link></li>
         </ul>

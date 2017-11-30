@@ -3,6 +3,7 @@ import { HashRouter as Router, Route, withRouter } from 'react-router-dom';
 import Layout from './layouts/default';
 import Home from './routes/home';
 import Generate from './routes/generate';
+import About from './routes/about';
 
 class App extends Component {
   render() {
@@ -11,6 +12,7 @@ class App extends Component {
         <Layout>
           <Route exact path='/' component={Home} />
           <Route path='/generate' component={Generate} />
+          <Route path='/about' component={About} />
         </Layout>
       </Router>
     );
