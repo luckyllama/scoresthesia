@@ -1,5 +1,4 @@
 import _ from 'lodash';
-const $ = window.$;
 
 const keys = {
   'Cb':  -7,
