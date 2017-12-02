@@ -13,6 +13,7 @@ class App extends Component {
           <Route exact path='/' component={Home} />
           <Route path='/generate' component={Generate} />
           <Route path='/about' component={About} />
+          <ScrollToTop />
         </Layout>
       </Router>
     );

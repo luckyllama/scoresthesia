@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
-import MusicData from './music-data';
+import MusicData from 'lib/music-data';
 import './styles.scss';
 
 @observer
@@ -20,7 +20,9 @@ export default class Generator extends Component {
     if (_.isEmpty(this.data) || this.props.filePath !== props.filePath) {
       let newData = new MusicData(props.filePath);
       newData.load()
-        .then(() => { this.data = newData; })
+        .then(() => {
+          this.data = newData;
+        })
         .catch(err => console.log(err));
     }
   }
