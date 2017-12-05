@@ -5,7 +5,7 @@ const $ = window.$;
 
 export default class MusicData {
   fileUrl = '';
-  rawData = {};
+  xml = {};
 
   constructor (fileUrl) {
     this.fileUrl = fileUrl;
@@ -33,8 +33,8 @@ export default class MusicData {
       let measures = [];
 
       let currentAttributes = {};
-      _.each($('measure', partData), measureData => {
-        let measure = new Measure(measureData, currentAttributes);
+      _.each($('measure', partData), xml => {
+        let measure = new Measure(xml, currentAttributes);
         currentAttributes = _.last(measure.attributes);
         measures.push(measure);
       });
@@ -45,23 +45,23 @@ export default class MusicData {
 }
 
 export class Measure {
-  rawData;
+  xml;
   number = -1;
   attributes = [];
   notes = new Map();
   pitchCount = new Map();
 
-  constructor (measureData, currentAttributes) {
-    this.rawData = measureData;
-    this.number = _.toNumber($(measureData).attr('number'));
+  constructor (xml, currentAttributes) {
+    this.xml = xml;
+    this.number = _.toNumber($(xml).attr('number'));
 
-    _.each($(measureData).children(), child => {
+    _.each($(xml).children(), child => {
       let $child = $(child);
 
       if ($child.is('attributes')) {
         this.attributes.push(new MeasureAttributes($child, currentAttributes));
       } else if ($child.is('note')) {
-        let newNote = new Note($child);
+        let newNote = new Note(child);
         this.notes.set({ staff: newNote.staff, voice: newNote.voice }, newNote);
 
         if (newNote.isRest === false) {
@@ -128,53 +128,50 @@ export class MeasureAttributes {
 }
 
 export class Note {
-  rawData = {};
-  duration = 0;
-  type = 'whole';
-  staff = 1;
-  voice = 'default';
-  pitch = { step: 'C', octave: 0 };
-  isRest = false;
-  isGrace = false;
-  isChord = false;
-  tie;
+  xml = {};
 
-  constructor (noteData) {
-    this.rawData = noteData;
+  constructor (noteXml) {
+    this.xml = noteXml;
 
-    this.duration = _.toNumber($('duration', noteData).text());
+    // convert xml to object which will be assigned to this object
+    let xmlToObject = node => {
+      let result = {};
+      _.each(node.attributes, attr =>
+        result[`@${attr.nodeName}`] = isFinite(attr.value) ? _.toNumber(attr.value) : attr.value
+      );
+      _.each(node.children, child => {
+        if (!_.isEmpty(result[child.nodeName])) {
+          result[child.nodeName] = [result[child.nodeName]];
+          result[child.nodeName].push(xmlToObject(child));
+        } else {
+          result[child.nodeName] = xmlToObject(child);
+        }
+      });
+      let value = node.textContent;
+      value = _.isEmpty(value) ? true : isFinite(value) ? _.toNumber(value) : value;
 
-    this.type = $('type', noteData).text();
+      return _.isEmpty(result) ? value : result;
+    };
+    let note = xmlToObject(noteXml);
 
-    this.staff = _.toNumber($('staff', noteData).text());
-
-    this.voice = $('voice', noteData).text();
-
-    let $pitch = $('pitch', noteData);
-    if (!_.isEmpty($pitch)) {
-      let pitch = {
-        step: $('step', $pitch).text(),
-        alter: NoteInfo.altToAcc(_.toNumber($('alter', $pitch).text())),
-        octave: _.toNumber($('octave', $pitch).text()),
-      };
-      this.pitch = Object.assign({}, NoteInfo.props(`${pitch.step}${pitch.alter}${pitch.octave}`));
-      this.pitch.prettyPrint = () => {
-        return this.pitch.pc;
+    // add additional pitch info not stored in musicxml
+    if (!_.isEmpty(note.pitch)) {
+      let convertedAlter = NoteInfo.altToAcc(note.pitch.alter);
+      note.pitch = Object.assign({}, NoteInfo.props(`${note.pitch.step}${convertedAlter}${note.pitch.octave}`));
+      note.pitch.prettyPrint = () => {
+        return note.pitch.pc;
       }
     }
 
-    this.isChord = $('chord', noteData).length !== 0;
-
-    this.isRest = $('rest', noteData).length !== 0;
-    if (this.isRest && _.isEmpty(this.type)) {
-      this.type = 'whole';
+    // might not be needed in musicxml 3.0 but was in 2.0
+    if (note.isRest && _.isEmpty(note.type)) {
+      note.type = 'whole';
     }
 
-    this.isGrace = $('grace', noteData).length !== 0;
     // give a small duration to grace notes (musicxml defines gives them 0)
-    if (this.isGrace) { this.duration = 1; }
+    if (note.isGrace) { note.duration = 1; }
 
-    this.tie = $('tie', noteData).attr('type');
+    Object.assign(this, note);
   }
 
   toString () {
