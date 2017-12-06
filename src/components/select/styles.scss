@@ -1,3 +1,5 @@
+@import 'src/assets/vars';
+
 .select {
   position: relative;
   font-size: 15px;
@@ -6,16 +8,16 @@
   margin: 0 5px;
   border: none;
   border-radius: 0;
-  border-bottom: solid 2px #aab7b8;
+  border-bottom: solid 2px $gray-mid2;
   cursor: pointer;
   overflow: hidden;
-  &:hover { border-bottom-color: #ee046c; }
+  &:hover { border-bottom-color: $red; }
 
   > .selected.option-wrapper {
 
     i {
       font-size: 12px;
-      transition: all .2s cubic-bezier(.4, 0, .2, 1);
+      transition: all .2s $ease-standard;
     }
     i.icon-arrow-up { display: none; }
     i.icon-arrow-down {
@@ -32,14 +34,14 @@
     display: block;
     position: absolute;
     left: 0;
-    background: #eaeded;
-    border: solid 2px #aab7b8;
+    background: $gray-light;
+    border: solid 2px $gray-mid2;
     box-sizing: border-box;
     z-index: 10;
     opacity: 0;
     transform: scale(.95);
     transform-origin: top left;
-    transition: all .3s cubic-bezier(.4, 0, .2, 1);
+    transition: all .3s $ease-standard;
 
     .option-wrapper {
       padding: 0 23px 0 5px;
@@ -47,21 +49,21 @@
       white-space: nowrap;
 
       &.selected {
-        background: #d5dbdb;
+        background: $gray-mid;
         cursor: default;
-        &:hover { background: #d5dbdb; }
+        &:hover { background: $gray-mid; }
       }
       &:hover {
-        background: darken(#eaeded, 3%);
+        background: darken($gray-light, 3%);
       }
     }
     .option-wrapper + .option-wrapper {
-      border-top: solid 1px #aab7b8;
+      border-top: solid 1px $gray-mid2;
     }
   }
 
   &.active {
-    &:hover { border-bottom-color: #aab7b8; }
+    &:hover { border-bottom-color: $gray-mid2; }
 
     overflow: visible;
     > .selected.option-wrapper {

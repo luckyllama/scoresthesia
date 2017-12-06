@@ -1,8 +1,10 @@
+@import 'src/assets/vars';
+
 body {
-  font: 20px/1.33 "sofia-pro", monospace; // serif "freight-text-pro"
+  font: 20px/1.33 $sans-serif; // serif "freight-text-pro"
   margin: 0;
   padding: 0;
-  color: #2b2b2b;
+  color: $dark;
 }
 
 .page.default {
@@ -13,14 +15,3 @@ body {
 
   }
 }
-/*
-black:       #2b2b2b;
-light gray:  #eaeded;
-mid gray:    #d5dbdb;
-dark gray:   #3e3e3e;
-dark gray2:  #383838;
-orange:      #fdac0b;
-dark orange: #e29a0f;
-red:         #ee046c;
-dark red:    #d60761;
-*/

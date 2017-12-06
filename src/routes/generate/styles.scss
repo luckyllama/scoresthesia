@@ -1,11 +1,13 @@
+@import 'src/assets/vars';
+
 .generate {
 
   .settings-container {
     font-size: 15px;
     margin-left: -40px; margin-right: -40px;
     overflow: hidden;
-    background: #eaeded;
-    transition: max-height .250s cubic-bezier(.4,0,.2,1);
+    background: $gray-light;
+    transition: max-height .250s $ease-standard;
 
     h3 {
       font-size: 20px;
@@ -14,12 +16,12 @@
       position: relative;
       padding: 0 40px;
       margin: 0;
-      background: #d5dbdb;
+      background: $gray-mid;
 
       &::before, &::after {
         content: '';
         display: block;
-        background: #373d3e;
+        background: $dark;
         position: absolute;
         right: 40px;
         top: 19px;
@@ -29,7 +31,7 @@
         width: 4px;
         margin-top: -8px;
         margin-right: 8px;
-        transition: all .3s cubic-bezier(.4,0,.2,1);
+        transition: all .3s $ease-standard;
       }
       &::after {
         width: 20px;
@@ -38,34 +40,11 @@
     }
     .settings-contents {
       overflow: auto;
-      transition: all .4s cubic-bezier(.4,0,.2,1);
+      transition: all .4s $ease-standard;
     }
 
     .setting {
       flex: 0 0 50%;
-    }
-
-    label {
-      padding-right: 10px;
-    }
-    select {
-      -webkit-appearance: none;
-      background-color: transparent;
-      font-size: 15px;
-      line-height: 20px;
-      padding: 0 5px;
-      margin: 0 5px;
-      border: none;
-      border-radius: 0;
-      border-bottom: solid 2px #aab7b8;
-      cursor: pointer;
-      &:hover {
-        border-bottom-color: #3e3e3e;
-      }
-      &:focus, &:active {
-        outline: none;
-        border-bottom-color: #ee046c;
-      }
     }
 
     // actual <fieldset> elements can't be flex due to browser bugs.
@@ -76,7 +55,7 @@
         font-size: 18px;
         line-height: 25px;
         position: relative;
-        border-bottom: solid 1px #aab7b8;
+        border-bottom: solid 1px $gray-mid2;
       }
 
       .settings-group {
@@ -91,7 +70,7 @@
     }
 
     &.active {
-      transition: all .4s cubic-bezier(.4,0,.2,1);
+      transition: all .4s $ease-standard;
       h3 {
         &::before {
           transform: scaleY(0);

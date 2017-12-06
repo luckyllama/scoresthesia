@@ -1,5 +1,7 @@
+@import 'src/assets/vars';
+
 nav.global {
-  background: rgba(62/255,58/255,55/255, .75);
+  background: opacify($dark,.25);// rgba(62/255,58/255,55/255, .75);
 
   ul {
     display: flex;
