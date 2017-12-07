@@ -45,6 +45,7 @@ export default class Generate extends Component {
   render() {
     let generatorData = Generator.MetaData[this.generatorIndex];
     let GeneratorOptions = generatorData.options;
+    let SelectedGenerator = generatorData.generator;
 
     let settingsHeight = this.settingsActive ? _.get(this.settingsContentsDiv, 'clientHeight', 0) : 0;
     let headerHeight = _.get(this.settingsHeader, 'clientHeight', 0);
@@ -87,8 +88,7 @@ export default class Generate extends Component {
       <div className={classnames('output', { 'is-loading': this.isLoading })}>
         {this.isLoading ?
          <div className='loading-message'>loading</div> :
-
-         <div className='generator'></div>
+         <SelectedGenerator data={this.data} />
         }
       </div>
     </div>;

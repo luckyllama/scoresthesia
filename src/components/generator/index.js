@@ -1,16 +1,16 @@
 
-import Debug, { DebugOptions } from './debug';
+import Debug, { DebugOptionsView } from './debug';
 
 export const MetaData = [
   {
     name: 'Debug',
     generator: Debug,
-    options: DebugOptions,
+    options: DebugOptionsView,
   }
 ];
 
 export {
-  Debug, DebugOptions,
+  Debug, DebugOptionsView,
 }
 
 // export default Generator;

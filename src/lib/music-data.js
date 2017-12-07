@@ -13,7 +13,7 @@ export default class MusicData {
 
   load () {
     return new Promise((resolve, reject) => {
-      fetch('data/frederic-chopin-nocturne-op9-no2.xml')
+      fetch(this.fileUrl)
         .then(response => response.text())
         .then(xmlText => this.parseXml(xmlText))
         .then(() => resolve())
