@@ -1,0 +1,29 @@
+@import 'src/assets/vars';
+
+.generator {
+
+}
+.measures {
+  min-width: 1220px;
+}
+
+.measure {
+  position: relative;
+  display: inline-block;
+
+  .number {
+    font-size: 12px;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .score {
+    display: inline-block;
+
+    svg path {
+      fill: lighten(#000, 95%);
+      stroke: lighten(#000, 95%);
+    }
+  }
+}
