@@ -169,13 +169,12 @@ export class Measure {
     let barlines = _.filter(this.children, ['@@nodeName', 'barline']);
     _.each(barlines, barline => this.barlines[barline['@location']] = barline);
   }
+  
   _processAttributes (currentAttributes) {
     let attributes = _.filter(this.children, ['@@nodeName', 'attributes']);
     this.attributes = _.transform(attributes, (result, attribute) => {
       let previous = _.defaultTo(result.slice(-1)[0], currentAttributes);
-      console.log('found attribute', attribute, previous,currentAttributes)
       result.push(new MeasureAttributes(attribute, previous));
-      console.log('result = ', result)
     }, []);
 
     if (this.attributes.length === 0) { this.attributes.push(currentAttributes); }
