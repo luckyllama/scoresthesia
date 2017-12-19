@@ -13,7 +13,7 @@ import './styles.scss';
 
 @observer
 export default class Generate extends Component {
-  @observable settingsActive = true;
+  @observable settingsActive = false;
   @observable filePath;
   @observable data;
   @observable isLoading = false;
@@ -22,7 +22,8 @@ export default class Generate extends Component {
   componentWillMount () {
     this.filePathReactionDispose = reaction(() => this.filePath, path => this.loadData() );
     // temp
-    this.filePath = 'data/frederic-chopin-nocturne-op9-no2.xml';
+    // this.filePath = 'data/frederic-chopin-nocturne-op9-no2.xml';
+    this.filePath = 'data/music-xml-test.xml';
   }
   componentWillUnmount () {
     this.filePathReactionDispose();
