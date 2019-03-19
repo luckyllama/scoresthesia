@@ -1,15 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import classnames from 'classnames';
-// import { observer } from 'mobx-react';
 import { withRouter } from 'react-router';
-import {
-  Navigation,
-} from 'components'
+import Navigation from 'components/navigation'
 import './styles.scss';
 
-@withRouter
-// @observer
-export default class DefaultLayout extends Component {
+
+class DefaultLayout extends React.Component {
   state = {};
 
   componentDidMount () {}
@@ -28,3 +24,5 @@ export default class DefaultLayout extends Component {
     );
   }
 }
+
+export default withRouter(DefaultLayout);

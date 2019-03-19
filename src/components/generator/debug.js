@@ -6,16 +6,18 @@ import classnames from 'classnames';
 import MeasureDisplay from './measure-display';
 import './styles.scss';
 
-@observer
-export default class Debug extends Component {
+class Debug extends Component {
   static defaultProps = {
     data: {},
     measuresPerLine: 4,
   }
 
-  @observable data;
+  state = {
+    data: {},
+    measures: [],
+  };  
+
   currentPage = 0;
-  @observable measures = [];
   measuresPerLine = 4;
   measuresPerPage = 4;
 
@@ -23,16 +25,18 @@ export default class Debug extends Component {
     this.componentWillReceiveProps(this.props);
   }
   componentWillReceiveProps (props) {
-    this.data = props.data;
     this.measuresPerLine = props.measuresPerLine || 4;
-    this.measuresPerPage = this.data.parts.count > 2 ? this.measuresPerLine : this.measuresPerLine * 2;
-    this.measures = this.data.getMeasuresByPage(this.currentPage, this.measuresPerPage);
-    console.log(this.measures)
+    this.measuresPerPage = props.data.parts.count > 2 ? this.measuresPerLine : this.measuresPerLine * 2;
+    this.setState({ 
+      data: props.data,
+      measures: props.data.getMeasuresByPage(this.currentPage, this.measuresPerPage),
+    });
+    console.log(this.state.measures)
   }
 
   componentDidMount () { this.componentDidUpdate(); }
   componentDidUpdate () {
-    // _.each(this.measures, (measure, index) => this.displayMeasure(measure,index));
+    // _.each(this.state.measures, (measure, index) => this.displayMeasure(measure,index));
   }
 
   // displayMeasure (measure, index) {
@@ -75,18 +79,18 @@ export default class Debug extends Component {
   // }
 
   render() {
-    if (_.isEmpty(this.data)) {
+    if (_.isEmpty(this.state.data)) {
       return <div className='generator error'>no music data given</div>
     }
     return <div className={classnames('generator')}>
       <div className='music-display'>
         <header>
-          <h4>Measures {this.measures[0].number}-{this.measures.slice(-1)[0].number}</h4>
+          <h4>Measures {this.state.measures[0].number}-{this.state.measures.slice(-1)[0].number}</h4>
           <div className='controls previous'><i className='icon icon-arrow-left' /> previous</div>
           <div className='controls next'>next <i className='icon icon-arrow-right' /></div>
         </header>
         <div className='measures'>
-          {/* {_.map(this.measures, (measure, index) =>
+          {/* {_.map(this.state.measures, (measure, index) =>
             <MeasureDisplay key={`measure-${measure.number}`} measure={measure}
               startSystem={index % this.measuresPerLine === 0} />
           )} */}
@@ -102,10 +106,9 @@ export default class Debug extends Component {
   }
 }
 
-class DebugOptions {
-  @observable todo = '';
-}
-const debugState = new DebugOptions();
+const debugState = observable({
+  todo: '',
+});
 
 export class DebugOptionsView extends Component {
 
@@ -115,3 +118,6 @@ export class DebugOptionsView extends Component {
       </div>;
   }
 }
+
+let DebugHOC = observer(Debug);
+export default DebugHOC;

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import { observable } from 'mobx';
-import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Vex from 'vexflow';
 import './styles.scss';
@@ -18,22 +16,22 @@ const VexConvert = {
   }
 };
 
-@observer
 export default class MeasureDisplay extends Component {
   static defaultProps = {
     measure: {},
     startSystem: false,
-  }
+  };
 
-  @observable measure;
-  @observable startSystem;
+  state = {
+    measure: {},
+    startSystem: false,
+  };
 
   componentWillMount () {
     this.componentWillReceiveProps(this.props);
   }
   componentWillReceiveProps (props) {
-    this.measure = props.measure;
-    this.startSystem = props.startSystem;
+    this.setState({ measure: props.measure, startSystem: props.startSystem });
   }
 
   componentDidMount () { this.componentDidUpdate(); }
@@ -42,27 +40,29 @@ export default class MeasureDisplay extends Component {
   }
 
   displayMeasure () {
-    let renderer = new vf.Renderer(`vex_${this.measure.number}`, vf.Renderer.Backends.SVG);
+    let { measure, startSystem } = this.state;
+
+    let renderer = new vf.Renderer(`vex_${measure.number}`, vf.Renderer.Backends.SVG);
     let context = renderer.getContext();
 
-    console.log('rendering measure', this.measure, this.startSystem);
+    console.log('rendering measure', measure, startSystem);
 
     let notesByStaff = {};
-    this.measure.notes.forEach((note, key) => {
-      if (this.measure.number === 0) { console.log('notebystaff', notesByStaff[key.staff], notesByStaff[key.staff] || [], note); }
+    measure.notes.forEach((note, key) => {
+      if (measure.number === 0) { console.log('notebystaff', notesByStaff[key.staff], notesByStaff[key.staff] || [], note); }
       notesByStaff[key.staff] = notesByStaff[key.staff] || [];
       notesByStaff[key.staff].push(note);
     });
 
-    let attributes = this.measure.attributes[0];
+    let attributes = measure.attributes[0];
     let staffSpacer = 110;
     let measureWidth = 300;
     // draw staff, clef, key, time,
     let staves = [];
     _.each(_.range(attributes.staves), staffIndex => {
-      let staff = new vf.Stave(this.startSystem ? 10 : 0, 10 + (staffIndex * staffSpacer), measureWidth - (this.startSystem ? 10 : 0));
+      let staff = new vf.Stave(startSystem ? 10 : 0, 10 + (staffIndex * staffSpacer), measureWidth - (startSystem ? 10 : 0));
       let clef = attributes.clefs[staffIndex];
-      if (this.startSystem) {
+      if (startSystem) {
         staff.addClef(clef.name);
         staff.addKeySignature(attributes.key.tonic);
         staff.addTimeSignature(`${attributes.time.beats}/${attributes.time['beat-type']}`);
@@ -77,7 +77,7 @@ export default class MeasureDisplay extends Component {
           keys: [note.rest ? 'b/4' : `${note.pitch.pc.toLowerCase()}/${note.pitch.oct}`],
           duration: `${VexConvert.duration[note.type]}${note.rest ? 'r':''}`
         };
-        if (this.measure.number === 0) { console.log('note info', noteInfo, notesByStaff[staffIndex]); }
+        if (measure.number === 0) { console.log('note info', noteInfo, notesByStaff[staffIndex]); }
         return new vf.StaveNote(noteInfo)
       });
 
@@ -90,12 +90,12 @@ export default class MeasureDisplay extends Component {
       // voice.draw(context, staff);
     });
     // draw staff connector
-    if (this.startSystem) {
+    if (startSystem) {
       _.each(staves, (staff, staffIndex) => {
         let nextStaff = staves[staffIndex + 1];
         if (nextStaff) {
           let connector = new vf.StaveConnector(staff, nextStaff);
-          let type = this.measure.number === 0 ? vf.StaveConnector.type.DOUBLE : vf.StaveConnector.type.SINGLE;
+          let type = measure.number === 0 ? vf.StaveConnector.type.DOUBLE : vf.StaveConnector.type.SINGLE;
           connector.setType(type);
           connector.setContext(context).draw();
         }
@@ -107,14 +107,15 @@ export default class MeasureDisplay extends Component {
   }
 
   render() {
-    if (_.isEmpty(this.measure)) {
+    let { measure, startSystem } = this.state;
+    if (_.isEmpty(measure)) {
       return <div className='measure unloaded'>no measure given</div>
     }
-    return <div key={`measure-${this.measure.number}`}
-      className={classnames('measure', { pickup: this.measure.implicit, 'new-line': this.startSystem })}
+    return <div key={`measure-${measure.number}`}
+      className={classnames('measure', { pickup: measure.implicit, 'new-line': startSystem })}
     >
-      <div id={`vex_${this.measure.number}`} className='score'></div>
-      <span className='number'>{this.measure.number}</span>
+      <div id={`vex_${measure.number}`} className='score'></div>
+      <span className='number'>{measure.number}</span>
     </div>;
   }
 }

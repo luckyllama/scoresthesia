@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 // import _ from 'lodash';
-// import { observable } from 'mobx';
-// import { observer } from 'mobx-react';
 // import classnames from 'classnames';
 import './styles.scss';
 
-// @observer
 export default class Option extends Component {
   static defaultProps = {
     value: 0,

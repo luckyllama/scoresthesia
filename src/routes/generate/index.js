@@ -5,50 +5,49 @@ import classnames from 'classnames';
 import { observable, action, reaction } from 'mobx';
 import { observer } from 'mobx-react';
 import * as Generator from 'components/generator';
-import {
-  Select, SelectOption
-} from 'components';
+import { Select, SelectOption } from 'components/select';
 import MusicData from 'lib/music-data';
 import './styles.scss';
 
-@observer
 export default class Generate extends Component {
-  @observable settingsActive = false;
-  @observable filePath;
-  @observable data;
-  @observable isLoading = false;
-  @observable generatorIndex = 0;
+  state = {
+    settingsActive: false,
+    filePath: '',
+    data: {},
+    isLoading: false,
+    generatorIndex: 0,
+  };
 
   componentWillMount () {
-    this.filePathReactionDispose = reaction(() => this.filePath, path => this.loadData() );
+    // this.filePathReactionDispose = reaction(() => this.filePath, path => this.loadData() );
     // temp
     // this.filePath = 'data/frederic-chopin-nocturne-op9-no2.xml';
-    this.filePath = 'data/music-xml-test.xml';
+    this.setState({ filePath: 'data/music-xml-test.xml' });
+    this.loadData();
   }
   componentWillUnmount () {
-    this.filePathReactionDispose();
+    // this.filePathReactionDispose();
   }
 
-  @action
+  // @action
   loadData () {
-    if (_.isEmpty(this.filePath)) { return; }
+    if (_.isEmpty(this.state.filePath)) { return; }
 
-    let newData = new MusicData(this.filePath);
-    this.isLoading = true;
+    let newData = new MusicData(this.state.filePath);
+    this.setState({ isLoading: true });
     newData.load()
       .then(() => {
-        this.data = newData;
-        this.isLoading = false;
+        this.setState({ data: newData, isLoading: false });
       })
       .catch(err => console.log(err));
   }
 
   render() {
-    let generatorData = Generator.MetaData[this.generatorIndex];
+    let generatorData = Generator.MetaData[this.state.generatorIndex];
     let GeneratorOptions = generatorData.options;
     let SelectedGenerator = generatorData.generator;
 
-    let settingsHeight = this.settingsActive ? _.get(this.settingsContentsDiv, 'clientHeight', 0) : 0;
+    let settingsHeight = this.state.settingsActive ? _.get(this.settingsContentsDiv, 'clientHeight', 0) : 0;
     let headerHeight = _.get(this.settingsHeader, 'clientHeight', 0);
     settingsHeight += headerHeight;
 
@@ -63,8 +62,8 @@ export default class Generate extends Component {
 
     return <div className='generate'>
 
-      <div className={classnames('settings-container', { active: this.settingsActive })} style={{maxHeight: settingsHeight+'px'}}>
-        <h3 ref={el => this.settingsHeader = el} onClick={() => this.settingsActive = !this.settingsActive}>settings</h3>
+      <div className={classnames('settings-container', { active: this.state.settingsActive })} style={{maxHeight: settingsHeight+'px'}}>
+        <h3 ref={el => this.settingsHeader = el} onClick={() => this.state.settingsActive = !this.state.settingsActive}>settings</h3>
         <div ref={el => this.settingsContentsDiv = el} className='settings-contents'>
           <div className='fieldset generator'>
             <div className='settings-group'>
@@ -86,17 +85,17 @@ export default class Generate extends Component {
         </div>
       </div>
 
-      <div className={classnames('output', { 'is-loading': this.isLoading })}>
-        {this.isLoading ?
+      <div className={classnames('output', { 'is-loading': this.state.isLoading })}>
+        {this.state.isLoading ?
          <div className='loading-message'>loading</div> :
-         <SelectedGenerator data={this.data} />
+         <SelectedGenerator data={this.state.data} />
         }
       </div>
     </div>;
   }
 
   onFilePathChange () {
-    this.filePath = this.refs.filePathSelect.value;
+    this.state.filePath = this.refs.filePathSelect.value;
   }
 
   onGeneratorChange () {

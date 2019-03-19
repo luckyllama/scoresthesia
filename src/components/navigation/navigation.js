@@ -7,8 +7,6 @@ import PropTypes from 'prop-types'
 import classnames from 'classnames';
 import './styles.scss';
 
-@withRouter
-// @observer
 class Navigation extends Component {
   static propTypes = {
     match: PropTypes.object.isRequired,

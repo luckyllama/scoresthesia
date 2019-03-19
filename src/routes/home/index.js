@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 // import { CSSTransition } from 'react-transition-group';
 // import { observer } from 'mobx-react';
 import './styles.scss';
 
 // @observer
-export default class Home extends Component {
+export default class Home extends React.Component {
   componentWillMount () {}
 
   render() {
