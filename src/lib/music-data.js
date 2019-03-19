@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { Note as NoteInfo } from 'tonal';
 import * as Key from 'tonal-key';
-const $ = window.$;
+import cheerio from 'cheerio';
 
 const ClefNames = {
   'G': 'treble',
@@ -12,22 +12,32 @@ const ClefNames = {
 };
 
 let xmlToObject = node => {
+  let value = node.data;
+  if (node.type === 'text') {
+    return isFinite(value) ? _.toNumber(value) : value;
+  }
+
   let result = {};
-  _.each(node.attributes, attr =>
-    result[`@${attr.nodeName}`] = isFinite(attr.value) ? _.toNumber(attr.value) : attr.value
+  _.each(node.attribs, (value, name) =>
+    result[`@${name}`] = isFinite() ? _.toNumber(value) : value
   );
+
+  _.remove(node.children, { data: ' ' }); // remove empty whitespace
   _.each(node.children, child => {
-    if (!_.isEmpty(result[child.nodeName])) {
-      result[child.nodeName] = [result[child.nodeName]];
-      result[child.nodeName].push(xmlToObject(child));
+    let childObject = xmlToObject(child);
+    let name = child.name || 'value';
+    if (!_.isEmpty(result[name])) {
+      result[name] = [result[name]];
+      result[name].push(childObject);
     } else {
-      result[child.nodeName] = xmlToObject(child);
+      result[name] = childObject;
     }
   });
-  let value = node.textContent;
-  value = _.isEmpty(value) ? true : isFinite(value) ? _.toNumber(value) : value;
-
-  return _.isEmpty(result) ? value : result;
+  // flatten simple text nodes
+  if (result.value && Object.keys(result).length === 1) {
+    return result.value;
+  }
+  return result;
 };
 
 export default class MusicData {
@@ -57,8 +67,10 @@ export default class MusicData {
   }
 
   parseXml (xmlText) {
-    let xml = $.parseXML(xmlText);
-    let $score = $('score-partwise', xml);
+    // let xml = $.parseXML(xmlText);
+    const $ = cheerio.load(xmlText, { xmlMode: true, ignoreWhitespace: true });
+
+    let $score = $('score-partwise');
     if ($score.length === 0) { throw Error('Only "score-partwise" files are supported.')}
 
     _.each($('part-list score-part', $score), partData => {
@@ -111,13 +123,15 @@ export class Measure {
 
   constructor (xml, currentAttributes) {
     this.xml = xml;
-    this.number = _.toNumber($(xml).attr('number'));
-    this.width = _.toNumber($(xml).attr('width'));
-    this.implicit = $(xml).attr('implicit') === 'yes';
+    const $ = cheerio.load(xml, { xmlMode: true, normalizeWhitespace: true });
+    this.number = _.toNumber($(':root').attr('number'));
+    this.width = _.toNumber($(':root').attr('width'));
+    this.implicit = $(':root').attr('implicit') === 'yes';
 
+    _.remove(xml.children, { data: ' ' }); // remove empty whitespace
     this.children = _.map(xml.children, child => {
       let data = xmlToObject(child);
-      data['@@nodeName'] = child.nodeName;
+      data['@@nodeName'] = child.name;
       return data;
     });
 

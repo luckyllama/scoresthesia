@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "classnames": "^2.2.6",
     "lodash": "^4.17.11",
     "mobx": "^5.9.0",

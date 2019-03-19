@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import classnames from 'classnames';
-// import { CSSTransition } from 'react-transition-group';
-import { observable, action, reaction } from 'mobx';
-import { observer } from 'mobx-react';
 import * as Generator from 'components/generator';
 import { Select, SelectOption } from 'components/select';
 import MusicData from 'lib/music-data';
@@ -23,17 +20,17 @@ export default class Generate extends Component {
     // temp
     // this.filePath = 'data/frederic-chopin-nocturne-op9-no2.xml';
     this.setState({ filePath: 'data/music-xml-test.xml' });
-    this.loadData();
+    this.loadData('data/music-xml-test.xml');
   }
   componentWillUnmount () {
     // this.filePathReactionDispose();
   }
 
   // @action
-  loadData () {
-    if (_.isEmpty(this.state.filePath)) { return; }
+  loadData (filePath) {
+    if (_.isEmpty(filePath)) { return; }
 
-    let newData = new MusicData(this.state.filePath);
+    let newData = new MusicData(filePath);
     this.setState({ isLoading: true });
     newData.load()
       .then(() => {
@@ -74,14 +71,14 @@ export default class Generate extends Component {
                 engine.
               </div>
             </div>
-          {GeneratorOptions ?
+          {/* {GeneratorOptions ?
             <div className='fieldset generator'>
               <div className='legend'>generator options</div>
               <div className='settings-group'>
                 <GeneratorOptions />
               </div>
             </div>
-          : null }
+          : null } */}
         </div>
       </div>
 

@@ -70,7 +70,7 @@ export default class MeasureDisplay extends Component {
       staff.setContext(context).draw();
       staves.push(staff);
 
-      let staffNotes = notesByStaff[staffIndex];
+      // let staffNotes = notesByStaff[staffIndex];
       let vexNotes = _.map(notesByStaff[staffIndex], note => {
         let noteInfo = {
           clef: clef.name,

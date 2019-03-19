@@ -44,8 +44,7 @@ export default class Select extends React.Component {
   }
 
   onOptionClick (index) {
-    this.state.selectedIndex = index;
-    this.isActive = false;
+    this.setState({ selectedIndex: index, isActive: false });
   }
 
   onChange () {
