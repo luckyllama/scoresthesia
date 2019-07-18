@@ -3,7 +3,7 @@ import _ from 'lodash';
 import classnames from 'classnames';
 import * as Generator from 'components/generator';
 import { Select, SelectOption } from 'components/select';
-import MusicData from 'lib/music-data';
+import { MusicData } from 'lib/music/data';
 import './styles.scss';
 
 export default class Generate extends Component {

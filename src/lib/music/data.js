@@ -40,7 +40,7 @@ let xmlToObject = node => {
   return result;
 };
 
-export default class MusicData {
+export class MusicData {
   fileUrl = '';
   xml = {};
   parts = {

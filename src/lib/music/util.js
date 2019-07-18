@@ -18,13 +18,11 @@ const keys = {
   'C#':   7
 };
 
-let Util = {
+export const Util = {
   keyToNum: (keyString) => {
     return keys[keyString];
   },
   numToKey: (keyNum) => {
     return _.invert(keys)[keyNum];
   }
-}
-
-export default Util;
+};
